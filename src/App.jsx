@@ -1,35 +1,42 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-// MUST be exported EXACTLY for test
-export const sampleProducts = [
+const PRODUCTS = [
   { id: 1, name: "Apple", category: "Fruit" },
   { id: 2, name: "Banana", category: "Fruit" },
   { id: 3, name: "Carrot", category: "Vegetable" },
-  { id: 4, name: "Milk", category: "Dairy" },
+  { id: 4, name: "Milk", category: "Dairy" }
 ];
 
-function App() {
+export default function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [cart, setCart] = useState([]);
   const [category, setCategory] = useState("All");
+  const [cart, setCart] = useState([]);
 
+  // FILTER PRODUCTS
+  const filteredProducts =
+    category === "All"
+      ? PRODUCTS
+      : PRODUCTS.filter((p) => p.category === category);
+
+  // ADD TO CART
   const addToCart = (product) => {
     setCart([...cart, product]);
   };
 
-  // IMPORTANT: EXACT FILTER LOGIC
-  const filteredProducts =
-    category === "All"
-      ? sampleProducts
-      : sampleProducts.filter((p) => p.category === category);
-
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: darkMode ? "#111" : "#fff",
+        color: darkMode ? "#fff" : "#000",
+        minHeight: "100vh",
+        padding: "20px"
+      }}
+    >
       <h1>Shopping App</h1>
 
-      {/* DARK MODE */}
+      {/* DARK MODE BUTTON */}
       <button onClick={() => setDarkMode(!darkMode)}>
-        Toggle Dark Mode
+        {darkMode ? "Light Mode" : "Dark Mode"}
       </button>
 
       {/* CATEGORY FILTER */}
@@ -48,12 +55,12 @@ function App() {
       {filteredProducts.length === 0 ? (
         <p>No products available</p>
       ) : (
-        filteredProducts.map((p) => (
-          <div key={p.id}>
-            <p>{p.name}</p>
+        filteredProducts.map((product) => (
+          <div key={product.id}>
+            <p>{product.name}</p>
             <button
-              data-testid={`product-${p.id}`}
-              onClick={() => addToCart(p)}
+              data-testid={`product-${product.id}`}
+              onClick={() => addToCart(product)}
             >
               Add to Cart
             </button>
@@ -63,11 +70,9 @@ function App() {
 
       {/* CART */}
       <h2>Cart</h2>
-      {cart.map((item, i) => (
-        <p key={i}>{item.name}</p>
+      {cart.map((item, index) => (
+        <p key={index}>{item.name}</p>
       ))}
     </div>
   );
 }
-
-export default App;
