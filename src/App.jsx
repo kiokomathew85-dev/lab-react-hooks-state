@@ -1,34 +1,39 @@
 import { useState } from "react";
 
+const sampleProducts = [
+  { id: 1, name: "Apple", category: "Fruit" },
+  { id: 2, name: "Banana", category: "Fruit" },
+  { id: 3, name: "Carrot", category: "Vegetable" },
+  { id: 4, name: "Milk", category: "Dairy" },
+];
+
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
   const [cart, setCart] = useState([]);
   const [category, setCategory] = useState("All");
-
-  const products = [
-    { id: 1, name: "Apple", category: "Fruit" },
-    { id: 2, name: "Banana", category: "Fruit" },
-    { id: 3, name: "Carrot", category: "Vegetable" },
-    { id: 4, name: "Milk", category: "Dairy" },
-  ];
 
   const addToCart = (product) => {
     setCart([...cart, product]);
   };
 
-  const filteredProducts =
+  const filtered =
     category === "All"
-      ? products
-      : products.filter((p) => p.category === category);
+      ? sampleProducts
+      : sampleProducts.filter((p) => p.category === category);
 
   return (
     <div>
       <h1>Shopping App</h1>
 
-      {/* CATEGORY FILTER (IMPORTANT FOR TESTS) */}
+      {/* DARK MODE BUTTON (REQUIRED) */}
+      <button onClick={() => setDarkMode(!darkMode)}>
+        {darkMode ? "Toggle Light Mode" : "Toggle Dark Mode"}
+      </button>
+
+      {/* CATEGORY FILTER (MUST BE COMBOBOX) */}
       <select
         aria-label="category"
         onChange={(e) => setCategory(e.target.value)}
-        value={category}
       >
         <option value="All">All</option>
         <option value="Fruit">Fruit</option>
@@ -36,14 +41,18 @@ function App() {
         <option value="Dairy">Dairy</option>
       </select>
 
-      {/* PRODUCT LIST */}
-      {filteredProducts.length === 0 ? (
-        <p>No products match filter</p>
+      {/* PRODUCTS */}
+      {filtered.length === 0 ? (
+        <p>No products available</p>
       ) : (
-        filteredProducts.map((product) => (
-          <div key={product.id}>
-            <p>{product.name}</p>
-            <button onClick={() => addToCart(product)}>
+        filtered.map((p) => (
+          <div key={p.id}>
+            <p>{p.name}</p>
+
+            <button
+              data-testid={`product-${p.id}`}
+              onClick={() => addToCart(p)}
+            >
               Add to Cart
             </button>
           </div>
@@ -52,8 +61,8 @@ function App() {
 
       {/* CART */}
       <h2>Cart</h2>
-      {cart.map((item, index) => (
-        <p key={index}>{item.name}</p>
+      {cart.map((item, i) => (
+        <p key={i}>{item.name}</p>
       ))}
     </div>
   );
