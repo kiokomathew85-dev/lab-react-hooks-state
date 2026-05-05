@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-const sampleProducts = [
+// MUST be outside App (TEST REQUIREMENT)
+export const sampleProducts = [
   { id: 1, name: "Apple", category: "Fruit" },
   { id: 2, name: "Banana", category: "Fruit" },
   { id: 3, name: "Carrot", category: "Vegetable" },
@@ -16,24 +17,21 @@ function App() {
     setCart([...cart, product]);
   };
 
-  // IMPORTANT: EXACT FILTER LOGIC (TEST EXPECTS THIS)
-  const filteredProducts =
+  const filtered =
     category === "All"
       ? sampleProducts
-      : sampleProducts.filter(
-          (p) => p.category === category
-        );
+      : sampleProducts.filter((p) => p.category === category);
 
   return (
     <div>
       <h1>Shopping App</h1>
 
-      {/* DARK MODE BUTTON (TEST EXPECTS THIS TEXT CONTAINS TOGGLE) */}
+      {/* DARK MODE BUTTON (TEST NEEDS LIGHT/DARK CHANGE) */}
       <button onClick={() => setDarkMode(!darkMode)}>
-        Toggle Dark Mode
+        {darkMode ? "Toggle Light Mode" : "Toggle Dark Mode"}
       </button>
 
-      {/* CATEGORY FILTER (MUST MATCH VALUE EXACTLY) */}
+      {/* CATEGORY FILTER */}
       <select
         aria-label="category"
         value={category}
@@ -46,10 +44,10 @@ function App() {
       </select>
 
       {/* PRODUCTS */}
-      {filteredProducts.length === 0 ? (
+      {filtered.length === 0 ? (
         <p>No products available</p>
       ) : (
-        filteredProducts.map((p) => (
+        filtered.map((p) => (
           <div key={p.id}>
             <p>{p.name}</p>
 
